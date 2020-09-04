@@ -1,0 +1,23 @@
+Design principles:
+1. Each shard must contain at least two nodes to provide fault tolerance
+2. Nodes are organized into shards based on the initial number of shards number of shards given by the environment variable SHARD_COUNT
+
+Sharding Mechanism:
+1. We will implement the sharding mechanism by partition all nodes most evenly. When the system starts, we will use the environment variable 
+   to initialize the partitioning.
+2. we will first examine the number of nodes are at least 2 times of shard count, otherwise sharding will fail and it should request a new shard count number 
+3. second, suppose n is the sequence of each node:
+    If n % shard_count == 0, then add the node to 1st shard
+    If n % shard_count == 1, then add the node to the 2nd shard
+    If n % shard_count == 2, then add the node to the 3rd shard
+    .
+    .
+    .etc 
+4. When a new node comes in, we will try to get the shard count from view, and use the sequence of the node % shard_count to distribute it into shard.
+5. Have a periodic timer check if each shard has at least two nodes(if any node fails), if not reshard the key-value store 
+6. If a shard has more nodes than the other shards, we will do a reshard for rebalancing.
+
+Resharding Mechanism:
+1. When we try to reshard, we will first check the numebr of nodes
+2. We will add the sequence of each node to a Hashset and redistribute them as sharding mechanism step 2 and 3.
+3. Since each key-value store is tracked with the sequence numbers of nodes, we can easily recount their numbers of keys.

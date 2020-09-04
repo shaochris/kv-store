@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+# cleanup the network
+./reset_network
+
+# build docker image
+docker build -t assignment4-image .

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+docker container stop $(docker ps -aq)
+docker container rm $(docker ps -aq)
+yes | docker network prune
+#docker network create --subnet=10.10.0.0/16 mynet
